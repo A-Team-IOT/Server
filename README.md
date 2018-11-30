@@ -8,3 +8,5 @@ with little or no UI configuration. This will be done by defining user actions o
 connection. The devives will need to connect via socket.io and have the server ip or url known as welll as login credentials.
 
 More to follow...
+
+VERY simple demo of what I have so far... https://www.youtube.com/watch?v=GY4pvDiLMXQ.
