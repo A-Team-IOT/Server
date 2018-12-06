@@ -43,6 +43,11 @@ io.on('connection', function(client) {
       client.broadcast.emit('lightChanged', state);    
       global.light = state;  
     });
+
+    client.on('dataFromDevice', function(data) {
+      console.log('data from device: ' + JSON.stringify(data));
+      io.sockets.emit('dataToTest', data);
+    });
   
   });
 

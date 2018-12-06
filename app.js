@@ -21,6 +21,7 @@ var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var usersRouter = require('./routes/users');
 var addDeviceRouter = require('./routes/addDevice');
+var testRouter = require('./routes/test');
 
 //TDOD: add options to run without db and users in this config file.
 //      add debug mode.
@@ -63,6 +64,7 @@ app.use('/users', usersRouter);
 app.use('/addDevice', addDeviceRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
+app.use('/test', testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 Test Input
+  p Send JSON data to the dataFromDevice listener
+
+  div(id="future")
+    form(id="chat_form")
+      input(id="chat_input" type="text" style="width:400px")
+      input(type="submit" value="Send")
+  
+  div(id="log")
+
+  script(type='text/javascript').
+    var socket = io.connect('http://localhost:3000')
+
+    socket.on('connect', function(data) {
+      console.log("client connected");
+    })
+
+    socket.on('dataToTest', function(data) {
+        $('#log').append("Data: "+ JSON.stringify(data) + "<br/>");
+    });
+
+    $('form').submit(function(e){
+      e.preventDefault();
+      socket.emit('dataFromDevice', $('#chat_input').val());
+    });
