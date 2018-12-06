@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
+var User = require('../schemas/user');
+var Device = require('../schemas/device');
 
 
 
@@ -47,6 +49,52 @@ io.on('connection', function(client) {
     client.on('dataFromDevice', function(data) {
       console.log('data from device: ' + JSON.stringify(data));
       io.sockets.emit('dataToTest', data);
+      var data = JSON.parse(data);
+      console.log(data.msg_type);
+
+      //EXAMPLE
+      //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev2", "components": [{"component_type":"button","name":"myButton","text": "click me", "method": "mymethod"},{"component_type":"button","name":"myButton2","text": "click me2", "method": "mymethod2"}]}
+      if(data.msg_type == "register")
+      {
+        //Check all values exist and authenticate
+        if (data.email && data.password && data.components && data.id) {
+          User.authenticate(data.email, data.password, function(err, usr){
+            if(err){
+              console.log("Failed to authenticate user, device not registered");
+            }
+            else{
+              User.update(
+                { "email" : data.email}, 
+                { "$addToSet": { "devices": data.id }}, 
+                function(error) {
+              });
+
+              var deviceData = {
+                id: data.id,
+                owner_email: data.email,
+                components: data.components
+              }
+
+              //use schema.create to insert device into the db
+              Device.create(deviceData, function (err, user) {
+                if (err) {
+                  console.log("Error creating device: " + err);
+                } else {
+                  console.log("device registered");
+                }
+              });
+
+
+            }
+            
+            
+          });
+        }
+      }
+      else if(data.msg_type == "event")
+      {
+
+      }
     });
   
   });
