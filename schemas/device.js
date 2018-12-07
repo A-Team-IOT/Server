@@ -16,8 +16,10 @@ var DeviceSchema = new mongoose.Schema({
   components: [{
     component_type: String,
     name: String,
-    text: String, 
-    method: String
+    method: String,
+    props: [
+      {}
+    ]
   }]
 });
 
