@@ -1,0 +1,42 @@
+mixin button(data)
+    button(id=data.name style="width:"+ (data.props.size*10)+"px; height: "+(data.props.size*10)+"px;")= data.props.text + " hi"
+
+mixin colorButton(data)
+    button(id=data.name style="color: "+data.props.color+"")= data.props.text
+
+mixin componentHandler(data)
+    if(data.component == "button")
+        +button(data)
+    else if data.component == "colorbutton"
+        +colorButton(data)
+mixin grid(props)
+  -
+    var props = props || {}
+    var dataSource = props.dataSource || {};
+    var columns = props.columns || [];
+    
+  mixin column(attrs)
+    -
+      var attrs = attrs || attributes;
+      columns.push(attrs);
+  table.table
+    colgroup    
+      each column in columns
+        col(style=column.width ? `width: ${column.width}` : null)
+
+    thead
+      tr
+        each column in columns
+          if column.headCellTemplate
+            th(class=column.headCellClass) !{column.headCellTemplate(column)}
+          else
+            th(class=column.headCellClass) #{column.title}
+    tbody
+      each dataItem, rowIndex in dataSource
+        tr         
+          each column in columns
+            - var dataElement = dataSource[rowIndex];
+            if (column.cellTemplate)
+              td(class=column.cellClass) !{column.cellTemplate(dataElement)}
+            else
+              td(class=column.cellClass) #{dataElement[column.key]}
