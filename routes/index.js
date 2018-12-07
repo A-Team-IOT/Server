@@ -7,4 +7,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express', list: global.list, light: global.light });
 });
 
+/* GET dashboard. */
+router.get('/dashboard', function(req, res, next) {
+  res.render('dashboard', {  });
+});
+
 module.exports = router;

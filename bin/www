@@ -54,7 +54,7 @@ io.on('connection', function(client) {
         console.log(data.msg_type);
 
         //EXAMPLE
-        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button","name":"myButton", "method": "mymethod", "props": [ {"text":"Click me"}, {"size": "5"} ]},{"component_type":"button","name":"myButton2", "method": "mymethod7", "props": [ {"text":"Click me"}, {"color": "blue"} ]}]}        
+        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "colorbutton", "name": "myButton2", "method": "mymethod7", "props": {"text":"Click me25", "color": "blue"} }]}      
         if(data.msg_type == "register")
         {
           //Check all values exist and authenticate
