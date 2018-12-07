@@ -86,9 +86,23 @@ io.on('connection', function(client) {
             });
           }
         }
-        else if(data.msg_type == "event")
+        //EXAMPLE 
+        //{"msg_type":"onStatChange", "id":"dev33", "switches": [{"id": "01", "value":"10"}, {"id": "02", "value":"1030"}] }
+        else if(data.msg_type == "onStatChange")
         {
-
+          if(data.id && data.switches)
+          { 
+            Device.update({"id": data.id}, {'$set': {"switches": data.switches}}, function(error){
+              if(error)
+              {
+                console.log(error);
+              }
+              else{
+                console.log("Device switches updated");
+              }
+              
+            });
+          }
         }
       }
       catch(e){
