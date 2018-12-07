@@ -1,12 +1,14 @@
 extends layout
 
 block content
-    h1 Dashboard
-    -var device = [{component_type:"button", name:"myButton", method: "mymethod", props: {text:"Click me", size: "5"} },{component_type: "colorbutton", name: "myButton2", method: "mymethod7", props: {text:"Click me25", color: "blue"} }]
+    h1 Dashboard : #{sessionTest}
+    -var device = [{component_type:"button", name:"myButton", method: "mymethod", props: {text:"Click me", size: "5"} },{component_type: "colorbutton", name: "myButton2", method: "mymethod7", props: {text:"Click me25", color: "blue"} },{component_type: "lightButton", name: "myButton3", method: "mymethodTest", state: "1", props: {text:"LightTest", color: "green"}}]
     for data in device
         if data.component_type == "button"
             +button(data)
+        else if data.component_type == "lightButton"
+            +lightButton(data)
         else if data.component_type == "colorbutton"
             +colorButton(data)
         else
-            p The componot failed to match a defined type
+            p The component failed to match a defined type
