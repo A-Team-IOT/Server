@@ -54,7 +54,7 @@ io.on('connection', function(client) {
         console.log(data.msg_type);
 
         //EXAMPLE
-        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "colorbutton", "name": "myButton2", "method": "mymethod7", "props": {"text":"Click me25", "color": "blue"} }]}      
+        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "switches": [{"id": "01", "value":"1"}, {"id": "02", "value":"1"}] , "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "colorbutton", "id":"02", "name": "myButton2", "method": "mymethod7", "props": {"text":"Click me25", "color": "blue"} }]}      
         if(data.msg_type == "register")
         {
           //Check all values exist and authenticate
@@ -73,7 +73,8 @@ io.on('connection', function(client) {
                 var deviceData = {
                   id: data.id,
                   owner_email: data.email,
-                  components: data.components
+                  components: data.components,
+                  switches: data.switches
                 }
 
                 Device.deviceCheckIn(deviceData);

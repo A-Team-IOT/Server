@@ -15,9 +15,14 @@ var DeviceSchema = new mongoose.Schema({
   },
   components: [{
     component_type: String,
+    id: Number,
     name: String,
     method: String,
     props: {}
+  }],
+  switches: [{
+    id: Number,
+    value: mongoose.Mixed
   }]
 });
 
