@@ -60,7 +60,8 @@ router.post('/login', function(req, res, next) {
         res.send(err);
       }
       else{
-        console.log(usr);
+        console.log(usr.email);
+        req.session.user = usr.email;
         res.redirect("/dashboard");
       }
       
@@ -69,6 +70,11 @@ router.post('/login', function(req, res, next) {
 
 
     }
+});
+
+router.get('/logout', function(req, res, next) {
+  req.session.user = null;
+  res.redirect("/login");
 });
 
 module.exports = router;

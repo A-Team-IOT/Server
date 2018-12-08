@@ -27,11 +27,11 @@ app.use(cookieParser());
 app.use(session({secret: 'Shh, its a secret!', key: 'mmmmCookie', cookie: {maxAge: null}}));
 
 
-app.get('/', function(req, res, next) {
-  req.session.someAttribute = "Juicey Tin";
-  var someAttribute = req.session.someAttribute;
-  //console.log(someAttribute)
-  res.redirect("/dashboard");
+app.get('*', function(req, res, next) {
+  res.locals.session = req.session;
+  
+  
+  next();
 });
 
 var indexRouter = require('./routes/index');
@@ -87,7 +87,7 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  
   // render the error page
   res.status(err.status || 500);
   res.render('error');
