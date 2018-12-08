@@ -54,7 +54,7 @@ io.on('connection', function(client) {
         console.log(data.msg_type);
 
         //EXAMPLE
-        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "switches": [{"id": "01", "value":"1"}, {"id": "02", "value":"1"}] , "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "colorbutton", "id":"02", "name": "myButton2", "method": "mymethod7", "props": {"text":"Click me25", "color": "blue"} }]}      
+        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}      
         if(data.msg_type == "register")
         {
           //Check all values exist and authenticate
@@ -73,8 +73,10 @@ io.on('connection', function(client) {
                 var deviceData = {
                   id: data.id,
                   owner_email: data.email,
-                  components: data.components,
+                  components: data.components
+                  /*,
                   switches: data.switches
+                  **/
                 }
 
                 Device.deviceCheckIn(deviceData);
@@ -87,18 +89,18 @@ io.on('connection', function(client) {
           }
         }
         //EXAMPLE 
-        //{"msg_type":"onStatChange", "id":"dev33", "switches": [{"id": "01", "value":"10"}, {"id": "02", "value":"1030"}] }
+        //{"msg_type":"onStatChange", "id":"dev33", "componentId": "1", "propName": "text", "propValue": "new text"}
         else if(data.msg_type == "onStatChange")
         {
-          if(data.id && data.switches)
+          if(data.id && data.componentId && data.propName && data.propValue)
           { 
-            Device.update({"id": data.id}, {'$set': {"switches": data.switches}}, function(error){
+            Device.updateProp(data.id, data.componentId, data.propName, data.propValue, function(error,docs){
               if(error)
               {
                 console.log(error);
               }
               else{
-                console.log("Device switches updated");
+                console.log("Device props update: " + docs);
               }
               
             });

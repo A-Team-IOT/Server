@@ -19,11 +19,13 @@ var DeviceSchema = new mongoose.Schema({
     name: String,
     method: String,
     props: {}
-  }],
+  }]
+  /*,
   switches: [{
     id: Number,
     value: mongoose.Mixed
   }]
+  **/
 });
 
 //if id is from the same user update or add device
@@ -70,5 +72,13 @@ DeviceSchema.statics.findDevicesByUser = function (email, callback) {
   });
 }
 
+DeviceSchema.statics.udpateProp = function (deviceId, componentId, propName, propValue, callback) {
+  var set = {$set: {}};
+  set.$set["components.$.props"+propName] = propValue;
+  Device.updateOne({ id: deviceId, 'component.id': componentId}, set, function(err, docs){
+    console.log(docs);
+    return callback(err, docs);
+  });
+}
 var Device = mongoose.model('Device', DeviceSchema);
 module.exports = Device;

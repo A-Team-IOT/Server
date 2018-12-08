@@ -2,4 +2,12 @@ extends layout
 block content
     h1 #{device.id}
     for comp in device.components
-        p #{comp.name}
+        
+        .col-lg-3
+            if comp.component_type == "button"
+                +button(comp)
+            else if comp.component_type == "light"
+                +light(comp)
+            else
+                p The component failed to match a defined type
+    .row
