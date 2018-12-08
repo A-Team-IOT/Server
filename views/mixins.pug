@@ -1,12 +1,25 @@
 mixin button(data)
-    button(id=data.name style="width:"+ (data.props.size*10)+"px; height: "+(data.props.size*10)+"px;")= data.props.text + " hi"
+    button(id=data.name style="width:"+ (data.props.size*10)+"px; height: "
+    +(data.props.size*10)+"px;")= data.props.text + " HiNigg"
 
 mixin colorButton(data)
     button(id=data.name style="color: "+data.props.color+"")= data.props.text
 
+mixin lightButton(data)
+    if (data.state == "1")
+        button(id=data.name style="color: "+data.props.color+"")= data.props.text
+        img.onBulb#bulbOne(src="/views/images/bulbOn1.png" alt="Bulb On Image")
+    else
+        button(id=data.name style="color: "+data.props.color+"")= data.props.text  
+        img.offBulb#bulbTwo(src="/views/images/bulbOff.png" alt="Bulb Off Image")
+    
+
+
+
 mixin componentHandler(data)
-    if(data.component == "button")
+    if (data.component == "button")
         +button(data)
     else if data.component == "colorbutton"
         +colorButton(data)
-        
+    else if data.component == "lightButton"
+        +lightButton(data)

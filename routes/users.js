@@ -61,7 +61,7 @@ router.post('/login', function(req, res, next) {
       }
       else{
         console.log(usr);
-        res.send(usr);
+        res.redirect("/dashboard");
       }
       
     });

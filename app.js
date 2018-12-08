@@ -1,10 +1,13 @@
+
 var createError = require('http-errors');
 var express = require('express');
 
 var app = express();
 
 var path = require('path');
+
 var cookieParser = require('cookie-parser');
+
 var logger = require('morgan');
 
 var bodyParser = require('body-parser');
@@ -13,8 +16,23 @@ var session = require('express-session')
 
 var mongoose = require('mongoose');
 
+//Session Requirements
+
+
 //Change this to match your db dumbass!
 mongoose.connect('mongodb://localhost/test');
+
+//TODO: use sessions for tracking logins
+app.use(cookieParser());
+app.use(session({secret: 'Shh, its a secret!', key: 'mmmmCookie', cookie: {maxAge: null}}));
+
+
+app.get('/', function(req, res, next) {
+  req.session.someAttribute = "Juicey Tin";
+  var someAttribute = req.session.someAttribute;
+  //console.log(someAttribute)
+  res.redirect("/dashboard");
+});
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -33,13 +51,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log("connected to mongoDB");
 });
-
-//TODO: use sessions for tracking logins
-app.use(session({
-  secret: 'work hard',
-  resave: true,
-  saveUninitialized: false
-}));
 
 
 //for parsing requests. Is deprecated, need up update this

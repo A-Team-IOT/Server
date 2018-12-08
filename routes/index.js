@@ -8,8 +8,8 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET dashboard. */
-router.get('/dashboard', function(req, res, next) {
-  res.render('dashboard', {  });
+router.get('/dashboard', function(req, res, next) { console.log(req.session.someAttribute)
+  res.render('dashboard', {sessionTest: req.session.someAttribute});
 });
 
 module.exports = router;
