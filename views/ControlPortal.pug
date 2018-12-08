@@ -1,1 +1,5 @@
 extends layout
+block content
+    h1 #{device.id}
+    for comp in device.components
+        p #{comp.name}

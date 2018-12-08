@@ -37,12 +37,20 @@ router.get('/dashboard', function(req, res, next) {
 
 /* GET controlportal. */
 router.get('/ControlPortal', function(req, res, next) { 
-  if (req.session.user){
-    res.render('ControlPortal', {});
-  }
-  else{
-    res.redirect("/login");
-  }
+  Device.findOne({id: req.query.device}, function(err, docs){
+    //console.log(docs);
+    if(err){
+      
+    }
+
+    if (req.session.user){
+      res.render('ControlPortal', {device: docs});
+    }
+    else{
+      res.redirect("/login");
+    }
+  });
+  
 });
 
 module.exports = router;
