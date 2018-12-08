@@ -54,7 +54,7 @@ io.on('connection', function(client) {
         console.log(data.msg_type);
 
         //EXAMPLE
-        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me", "size": "5"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}      
+        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}      
         if(data.msg_type == "register")
         {
           //Check all values exist and authenticate
@@ -89,8 +89,8 @@ io.on('connection', function(client) {
           }
         }
         //EXAMPLE 
-        //{"msg_type":"onStatChange", "id":"dev33", "componentId": "1", "propName": "text", "propValue": "new text"}
-        else if(data.msg_type == "onStatChange")
+        //{"msg_type":"onPropChange", "id":"dev33", "componentId": "1", "propName": "text", "propValue": "new text"}
+        else if(data.msg_type == "onPropChange")
         {
           if(data.id && data.componentId && data.propName && data.propValue)
           { 
@@ -100,7 +100,7 @@ io.on('connection', function(client) {
                 console.log(error);
               }
               else{
-                console.log("Device props update: " + docs);
+                console.log("Device props update: " + JSON.stringify(docs));
               }
               
             });
@@ -109,7 +109,7 @@ io.on('connection', function(client) {
       }
       catch(e){
         console.log('data from device is NOT JSON: ');
-        console.log(data);
+        console.log(e);
       }
     });
   

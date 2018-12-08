@@ -72,11 +72,11 @@ DeviceSchema.statics.findDevicesByUser = function (email, callback) {
   });
 }
 
-DeviceSchema.statics.udpateProp = function (deviceId, componentId, propName, propValue, callback) {
+DeviceSchema.statics.updateProp = function (deviceId, componentId, propName, propValue, callback) {
   var set = {$set: {}};
-  set.$set["components.$.props"+propName] = propValue;
-  Device.updateOne({ id: deviceId, 'component.id': componentId}, set, function(err, docs){
-    console.log(docs);
+  set.$set["components.$.props."+propName] = propValue;
+  console.log(JSON.stringify(set));
+  Device.updateOne({ id: deviceId, 'components.id': componentId}, set, function(err, docs){
     return callback(err, docs);
   });
 }
