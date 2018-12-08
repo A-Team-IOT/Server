@@ -1,7 +1,39 @@
 extends layout
 block content    
-      
-      include devicelistmixin
+    
+    -
+        var data = deviceList;
+        
+
+    +grid({
+    dataSource: deviceList,
+    columns: [
+        {
+        key: 'id',
+        title: 'Device Id'
+        },
+        {
+        key: 'name',
+        title: 'Device Name',    
+        cellTemplate: (props) => {
+            return `
+            <a href="ControlPortal">${props.id}</a>
+            `;
+        }
+        },
+        {
+        key: 'status',
+        title: 'Device Status',
+        headCellClass: ['u-align-right'],
+        cellClass: ['u-align-right'],
+        cellTemplate: (props) => {
+            return `
+            <code style="color: #6d7e8c">${props.owner_email}</code>
+            `;
+        }
+        },
+    ]
+    })
 
 
      

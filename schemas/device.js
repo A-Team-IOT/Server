@@ -62,5 +62,13 @@ DeviceSchema.statics.deviceCheckIn = function (deviceData) {
     });
 }
 
+
+DeviceSchema.statics.findDevicesByUser = function (email, callback) {
+  Device.find({ owner_email: email}, {id: 1, owner_email: 1, _id: 0}, function(err, docs){
+    //console.log(docs);
+    return callback(err, docs);
+  });
+}
+
 var Device = mongoose.model('Device', DeviceSchema);
 module.exports = Device;

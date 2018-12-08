@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var Device = require('../schemas/device');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -15,12 +16,23 @@ router.get('/', function(req, res, next) {
 
 /* GET dashboard. */
 router.get('/dashboard', function(req, res, next) { 
-  if (req.session.user){
-    res.render('dashboard', {});
-  }
-  else{
-    res.redirect("/login");
-  }
+  
+  Device.findDevicesByUser(req.session.user, function(err, docs){
+    if(err){
+      console.log(err);
+    }
+    else{
+      var deviceList = docs;
+      console.log(deviceList);
+      if (req.session.user){
+        res.render('dashboard', {deviceList: deviceList});
+      }
+      else{
+        res.redirect("/login");
+      }
+    }
+  });
+  
 });
 
 /* GET controlportal. */
