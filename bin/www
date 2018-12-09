@@ -123,6 +123,7 @@ io.on('connection', function(client) {
     });
 
     client.on('register', function(data) {
+      console.log("REGISTER");
       io.sockets.emit('dataToTest', "Register event: " + data);
       var data1 = {"msg_type":"register", "email":"ryan2@ryan2.com", "password": "ryan2", "id":"dev123", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}  
       io.sockets.emit('dataToTest', JSON.stringify(data1));
