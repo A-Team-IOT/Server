@@ -119,7 +119,7 @@ io.on('connection', function(client) {
 
     client.on('dataFromWebpage', function(data) {
       console.log(data);
-      io.sockets.emit(data.deviceId, "1");
+      io.sockets.emit(data.deviceId, data);
       io.sockets.emit('dataToTest', "Button clicked on UI");
     });
 

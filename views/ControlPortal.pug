@@ -8,14 +8,21 @@ block content
         })
         var deviceIdGlobal = "#{device.id}";
 
-        function buttonClicked(deviceId, compId, compName){
+        function buttonClicked(deviceId, compId, compName, state){
             console.log("button clicked");
             var buttonJson = {};
             buttonJson.deviceId = deviceId;
             buttonJson.componentId = compId;
             buttonJson.componentName = compName;
-            
-            socket.emit("dataFromWebpage", buttonJson);
+
+            if(state == "1")
+            {
+                stateFinal = "true";
+            }
+            else{
+                stateFinal = "false"
+            }
+            socket.emit("dataFromWebpage", stateFinal);
         }
 
     h1 #{device.id}

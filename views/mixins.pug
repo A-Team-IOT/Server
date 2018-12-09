@@ -2,7 +2,7 @@ mixin button(comp)
     button(id=comp.id)= comp.props.text
     script.
       $("#"+"#{comp.id}").on('click', function(){
-        buttonClicked(deviceIdGlobal, "#{comp.id}", "#{comp.name}");
+        buttonClicked(deviceIdGlobal, "#{comp.id}", "#{comp.name}", "#{comp.props.state}");
       });
       
       
