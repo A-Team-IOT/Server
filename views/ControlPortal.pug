@@ -17,10 +17,10 @@ block content
 
             if(state == "1")
             {
-                stateFinal = "true";
+                stateFinal = "false";
             }
             else{
-                stateFinal = "false"
+                stateFinal = "true"
             }
             socket.emit("dataFromWebpage", stateFinal);
         }
