@@ -100,7 +100,10 @@ io.on('connection', function(client) {
                 console.log(error);
               }
               else{
+                var json = {};
+                json[data.propName] = data.propValue;
                 console.log("Device props update: " + JSON.stringify(docs));
+                io.sockets.emit(data.id + data.componentId, json);
               }
               
             });

@@ -1,6 +1,14 @@
 extends layout
 block content
+    script.
+        var socket = io.connect()
+
+        socket.on('connect', function(data) {
+            console.log("Connected!");
+        })
+        var deviceIdGlobal = "#{device.id}";
     h1 #{device.id}
+    
     for comp in device.components
         
         .col-lg-3
@@ -11,3 +19,4 @@ block content
             else
                 p The component failed to match a defined type
     .row
+    
