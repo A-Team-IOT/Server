@@ -121,6 +121,58 @@ io.on('connection', function(client) {
       console.log(data);
       io.sockets.emit(data.deviceId, data);
     });
+
+    client.on('register', function(data) {
+      io.sockets.emit('dataToTest', "Register event: " + data);
+      var data1 = {"msg_type":"register", "email":"ryan2@ryan2.com", "password": "ryan2", "id":"dev123", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}  
+      io.sockets.emit('dataToTest', JSON.stringify(data1));
+      User.authenticate(data1.email, data1.password, function(err, usr){
+        if(err){
+          console.log("Failed to authenticate user, device not registered");
+        }
+        else{
+          User.update(
+            { "email" : data1.email}, 
+            { "$addToSet": { "devices": data1.id }}, 
+            function(error) {
+          });
+
+          var deviceData = {
+            id: data1.id,
+            owner_email: data1.email,
+            components: data1.components
+            /*,
+            switches: data.switches
+            **/
+          }
+
+          Device.deviceCheckIn(deviceData);
+
+
+        }
+        
+        
+      });
+    });
+
+    client.on('deviceEvent', function(data) {
+      io.sockets.emit('dataToTest', "Device event: " + data);
+      var data1 = {"msg_type":"onPropChange", "id":"dev123", "componentId": "2", "propName": "state", "propValue": data}
+      io.sockets.emit('dataToTest', JSON.stringify(data1));
+      Device.updateProp(data1.id, data1.componentId, data1.propName, data1.propValue, function(error,docs){
+        if(error)
+        {
+          console.log(error);
+        }
+        else{
+          var json = {};
+          json[data1.propName] = data1.propValue;
+          console.log("Device props update: " + JSON.stringify(docs));
+          io.sockets.emit(data.id + data.componentId, json);
+        }
+        
+      });
+    });
   
   });
 

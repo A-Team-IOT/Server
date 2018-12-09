@@ -8,6 +8,8 @@ block content
     form(id="chat_form")
       input(id="chat_input" type="text" style="width:800px")
       input(type="submit" value="Send")
+
+  button(id="register") Register
   
   div(id="log")
 
@@ -25,4 +27,8 @@ block content
     $('form').submit(function(e){
       e.preventDefault();
       socket.emit('dataFromDevice', $('#chat_input').val());
+    });
+
+    $("#register").on('click', function(){
+      socket.emit('register', "Test Input Register Event");
     });
