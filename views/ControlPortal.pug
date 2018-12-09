@@ -7,6 +7,17 @@ block content
             console.log("Connected!");
         })
         var deviceIdGlobal = "#{device.id}";
+
+        function buttonClicked(deviceId, compId, compName){
+            console.log("button clicked");
+            var buttonJson = {};
+            buttonJson.deviceId = deviceId;
+            buttonJson.componentId = compId;
+            buttonJson.componentName = compName;
+            
+            socket.emit("dataFromWebpage", buttonJson);
+        }
+
     h1 #{device.id}
     
     for comp in device.components

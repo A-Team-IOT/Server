@@ -115,6 +115,12 @@ io.on('connection', function(client) {
         console.log(e);
       }
     });
+
+
+    client.on('dataFromWebpage', function(data) {
+      console.log(data);
+      io.sockets.emit(data.deviceId, data);
+    });
   
   });
 
