@@ -169,7 +169,7 @@ io.on('connection', function(client) {
           var json = {};
           json[data1.propName] = data1.propValue;
           console.log("Device props update: " + JSON.stringify(docs));
-          client.broadcast.emit(data.id + data.componentId, json);
+          io.sockets.emit(data.id + data.componentId, json);
         }
         
       });
