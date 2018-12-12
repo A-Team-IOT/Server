@@ -20,7 +20,7 @@ html
          ul.nav.navbar-nav.navbar-right
           li
             if session.user 
-              a(href="users/logout")
+              a(href="api/users/logout")
                 span.glyphicon.glyphicon-user  Logout
     if session.user
       h3 User: #{session.user}

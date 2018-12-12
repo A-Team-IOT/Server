@@ -3,32 +3,24 @@
 /**
  * Module dependencies.
  */
-
-var app = require('../app');
-var debug = require('debug')('myapp:server');
-var http = require('http');
-var User = require('../schemas/user');
-var Device = require('../schemas/device');
-
-
-
-global.list = ["one","two"];
-
+const app = require('../app');
+const debug = require('debug')('myapp:server');
+const http = require('http');
+const User = require('../schemas/user');
+const Device = require('../schemas/device');
 
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '8080');
+const port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
+const server = http.createServer(app);
 
-var server = http.createServer(app);
-
-var io = require('socket.io')(server);
+const io = require('socket.io')(server);
 
 global.light = false;
 io.on('connection', function(client) {

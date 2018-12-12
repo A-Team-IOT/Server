@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../schemas/user');
+var User = require('../../schemas/user');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -38,12 +38,12 @@ router.post('/addUser', function(req, res, next) {
       if (err) {
         return next(err)
       } else {
-        return res.send('Success bitch!');
+        return res.redirect("/login");
       }
     });
   }
   else{
-    res.send("Complete all fields and match passwords bitch");
+    res.redirect("/register");
   }
 });
 
@@ -55,9 +55,9 @@ router.post('/login', function(req, res, next) {
     
 
     User.authenticate(req.body.email, req.body.password, function(err, usr){
-      if(err){
+      if(err || usr == undefined){
         console.log(err);
-        res.send(err);
+        res.redirect("/login");
       }
       else{
         console.log(usr.email);

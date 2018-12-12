@@ -1,57 +1,31 @@
 
-var createError = require('http-errors');
-var express = require('express');
+const createError = require('http-errors');
+const express = require('express');
+const app = express();
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const mongoose = require('mongoose');
 
-var app = express();
-
-var path = require('path');
-
-var cookieParser = require('cookie-parser');
-
-var logger = require('morgan');
-
-var bodyParser = require('body-parser');
-
-var session = require('express-session')
-
-var mongoose = require('mongoose');
-
-//Session Requirements
-
+//TDOD: add options to run without db and users in this config file.
+//      add debug mode.
+const config = require('./config');
 
 //Change this to match your db dumbass!
 mongoose.connect('mongodb://localhost/test');
 
-//TODO: use sessions for tracking logins
-app.use(cookieParser());
-app.use(session({secret: 'Shh, its a secret!', key: 'mmmmCookie', cookie: {maxAge: null}}));
-
-
-app.get('*', function(req, res, next) {
-  res.locals.session = req.session;
-  
-  
-  next();
-});
-
-var indexRouter = require('./routes/index');
-var loginRouter = require('./routes/login');
-var registerRouter = require('./routes/register');
-var usersRouter = require('./routes/users');
-var addDeviceRouter = require('./routes/addDevice');
-var testRouter = require('./routes/test');
-
-//TDOD: add options to run without db and users in this config file.
-//      add debug mode.
-var config = require('./config');
-
 //connect to mongo
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log("connected to mongoDB");
 });
 
+//TODO: use sessions for tracking logins
+app.use(cookieParser());
+app.use(session({secret: 'Shh, its a secret!', key: 'mmmmCookie', cookie: {maxAge: null}}));
 
 //for parsing requests. Is deprecated, need up update this
 app.use(bodyParser.json());
@@ -70,12 +44,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/addDevice', addDeviceRouter);
-app.use('/login', loginRouter);
-app.use('/register', registerRouter);
-app.use('/test', testRouter);
+//make session data availible to any request
+app.get('*', function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+const webRouter = require('./routes/web_routes/pages');
+//TODO only include webTestRouter if debug mode is enabled
+const webTestRouter = require('./routes/web_routes/test');
+const apiUsersRouter = require('./routes/api/users');
+
+app.use('/', webRouter);
+app.use('/test', webTestRouter);
+app.use('/api/users', apiUsersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
