@@ -11,7 +11,6 @@ router.get('/', function(req, res, next) {
         users = JSON.stringify(docs);
         console.log(users);
         res.send( users );
-        process.exit();
     } else {throw err;}
 })
 
@@ -19,7 +18,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST add a new user. */
-router.post('/addUser', function(req, res, next) {
+router.post('/', function(req, res, next) {
   console.log("POST adding user");
   //Check all values exist
   if (req.body.email &&
@@ -36,14 +35,15 @@ router.post('/addUser', function(req, res, next) {
     //use schema.create to insert data into the db
     User.create(userData, function (err, user) {
       if (err) {
-        return next(err)
+        return res.send(err);
       } else {
-        return res.redirect("/login");
+        return res.send(user);
       }
     });
   }
   else{
-    res.redirect("/register");
+    res.status(400);
+    res.send();
   }
 });
 
@@ -56,13 +56,12 @@ router.post('/login', function(req, res, next) {
 
     User.authenticate(req.body.email, req.body.password, function(err, usr){
       if(err || usr == undefined){
-        console.log(err);
-        res.redirect("/login");
+        res.status(401);
+        res.send(err);
       }
       else{
-        console.log(usr.email);
         req.session.user = usr.email;
-        res.redirect("/dashboard");
+        res.send(usr);
       }
       
     });
@@ -74,7 +73,7 @@ router.post('/login', function(req, res, next) {
 
 router.get('/logout', function(req, res, next) {
   req.session.user = null;
-  res.redirect("/login");
+  res.send();
 });
 
 module.exports = router;

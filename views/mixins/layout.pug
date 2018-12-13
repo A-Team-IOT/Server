@@ -20,9 +20,21 @@ html
          ul.nav.navbar-nav.navbar-right
           li
             if session.user 
-              a(href="api/users/logout")
+              a#logout-button(href="")
                 span.glyphicon.glyphicon-user  Logout
     if session.user
       h3 User: #{session.user}
     block content
     include footer.pug
+  script.
+    $("#logout-button").click(function(event){
+      event.preventDefault();
+
+      $.get( "api/users/logout")
+        .done(function() {
+          window.location = "/login";
+        })
+        .fail(function() {
+          console.log("Cannot logout");
+        })
+    });

@@ -1,0 +1,33 @@
+extends ../mixins/layout
+
+block content
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Log In
+        form(id='login-form' method='POST' action='api/users/login')
+          div.form-group
+            label(for='email') Email
+            input.form-control(type='text' id='email' placeholder='email' name='email')
+          div.form-group
+            label(for='password') Password
+            input.form-control(type='password' id='password' placeholder='password' name='password')
+          .row
+            p#error-msg(style="color:red")
+          .row  
+           button#submit-login.col-sm-3.button.btn.btn-primary(type='submit') Log in 
+           .col-sm-3
+           .col-sm-3
+           a.col-sm-3.a.btn.btn-primary(href="/register") Register
+  script.
+    $("#submit-login").click(function(event){
+      event.preventDefault();
+
+      $.post( "api/users/login", $('#login-form').serialize())
+        .done(function() {
+          window.location = "/dashboard";
+        })
+        .fail(function() {
+          $("#error-msg").html("Failed to login. Please check the username and password.");
+        })
+    });

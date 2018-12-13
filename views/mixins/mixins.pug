@@ -1,32 +1,5 @@
-mixin button(comp)
-    button(id=comp.id)= comp.props.text
-    script.
-      $("#"+"#{comp.id}").on('click', function(){
-        buttonClicked(deviceIdGlobal, "#{comp.id}", "#{comp.name}", "#{comp.props.state}");
-      });
-      
-      
-    
-
-mixin light(comp)
-    if (comp.props.state == "1")
-        img(id=comp.id).onBulb(src="/views/images/bulbOn1.png" alt="Bulb On Image")
-    else
-        img(id=comp.id).offBulb(src="/views/images/bulbOff.png" alt="Bulb Off Image")
-    br
-    p #{comp.name}
-    script.
-      socket.on(deviceIdGlobal+"#{comp.id}", function(data) {
-        console.log(data);
-        var state = data.state;
-
-        if(state == 1){
-          $('#'+"#{comp.id}").attr("src", "/views/images/bulbOn1.png");
-        }
-        else{
-          $('#'+"#{comp.id}").attr("src", "/views/images/bulbOff.png");
-        }
-      });
+include ../components/button
+include ../components/light
 
 mixin grid(props)
   -

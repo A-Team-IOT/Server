@@ -46,6 +46,7 @@ app.use(express.static(path.join(__dirname, '')));
 
 //make session data availible to any request
 app.get('*', function(req, res, next) {
+  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
   res.locals.session = req.session;
   next();
 });
@@ -72,7 +73,7 @@ app.use(function(err, req, res, next) {
   
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('pages/error');
 });
 
 

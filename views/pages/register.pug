@@ -1,11 +1,11 @@
-extends layout
+extends ../mixins/layout
 
 block content
   .main.container
     .row
       .col-md-6.col-md-offset-3
         h1.display-4.m-b-2 Register
-        form(method='POST' action='api/users/addUser')
+        form#register-form(method='POST' action='api/users')
           div.form-group
             label(for='email') Email
             input.form-control(type='text' id='email' placeholder='email' name='email')
@@ -18,5 +18,19 @@ block content
           div.form-group
             label(for='passwordConf') Password Confirmation
             input.form-control(type='password' id='passwordConf' placeholder='password' name='passwordConf')
-          button.btn.btn-primary(type='submit') Log in 
+          .row
+            p#error-msg(style="color: red;")
+          button#submit-register.btn.btn-primary(type='submit') Submit
+  script.
+    $("#submit-register").click(function(event){
+      event.preventDefault();
+
+      $.post( "api/users", $('#register-form').serialize())
+        .done(function() {
+          window.location = "/login";
+        })
+        .fail(function() {
+          $("#error-msg").html("Failed to register. Please enter valid information.");
+        })
+    });
         
