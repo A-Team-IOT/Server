@@ -6,8 +6,7 @@
 const app = require('../app');
 const debug = require('debug')('myapp:server');
 const http = require('http');
-const User = require('../schemas/user');
-const Device = require('../schemas/device');
+const SocketEventLoader = require('../socketEventHandlers/socketEventLoader');
 
 /**
  * Get port from environment and store in Express.
@@ -20,158 +19,10 @@ app.set('port', port);
  */
 const server = http.createServer(app);
 
-const io = require('socket.io')(server);
+global.io = require('socket.io')(server);
 
-global.light = false;
-io.on('connection', function(client) {
-  console.log('Client connected...'  + client.id);
-  
-    client.on('toggleFromPage', function(state) {
-      console.log('id: Clicked from page');
-      client.broadcast.emit('light', state);    
-      global.light = state;  
-    });
-
-    client.on('toggleFromBoard', function(state) {
-      console.log('id: Button from board pushed');
-      client.broadcast.emit('lightChanged', state);    
-      global.light = state;  
-    });
-
-    client.on('dataFromDevice', function(data) {
-      try{  
-        console.log('data from device: ' + JSON.stringify(data));
-        io.sockets.emit('dataToTest', data);
-        var data = JSON.parse(data);
-        console.log(data.msg_type);
-
-        //EXAMPLE
-        //{"msg_type":"register", "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}      
-        if(data.msg_type == "register")
-        {
-          //Check all values exist and authenticate
-          if (data.email && data.password && data.components && data.id) {
-            User.authenticate(data.email, data.password, function(err, usr){
-              if(err){
-                console.log("Failed to authenticate user, device not registered");
-              }
-              else{
-                User.update(
-                  { "email" : data.email}, 
-                  { "$addToSet": { "devices": data.id }}, 
-                  function(error) {
-                });
-
-                var deviceData = {
-                  id: data.id,
-                  owner_email: data.email,
-                  components: data.components
-                  /*,
-                  switches: data.switches
-                  **/
-                }
-
-                Device.deviceCheckIn(deviceData);
-
-
-              }
-              
-              
-            });
-          }
-        }
-        //EXAMPLE 
-        //{"msg_type":"onPropChange", "id":"dev33", "componentId": "1", "propName": "text", "propValue": "new text"}
-        else if(data.msg_type == "onPropChange")
-        {
-          if(data.id && data.componentId && data.propName && data.propValue)
-          { 
-            Device.updateProp(data.id, data.componentId, data.propName, data.propValue, function(error,docs){
-              if(error)
-              {
-                console.log(error);
-              }
-              else{
-                var json = {};
-                json[data.propName] = data.propValue;
-                console.log("Device props update: " + JSON.stringify(docs));
-                io.sockets.emit(data.id + data.componentId, json);
-              }
-              
-            });
-          }
-        }
-      }
-      catch(e){
-        console.log('data from device is NOT JSON: ');
-        console.log(e);
-      }
-    });
-
-
-    client.on('dataFromWebpage', function(data) {
-      console.log(data);
-      io.sockets.emit("dev123", data);
-      io.sockets.emit('dataToTest', "Button clicked on UI");
-    });
-
-    client.on('register', function(data) {
-      console.log("REGISTER");
-      io.sockets.emit('dataToTest', "Register event: " + data);
-      var data1 = {"msg_type":"register", "email":"ryan2@ryan2.com", "password": "ryan2", "id":"dev123", "components": [{"component_type":"button", "id":"01", "name":"myButton", "method": "mymethod", "props": {"text":"Click me"} },{"component_type": "light", "id":"02", "name": "light", "method": "mymethod7", "props": {"state":"1"} }]}  
-      io.sockets.emit('dataToTest', JSON.stringify(data1));
-      User.authenticate(data1.email, data1.password, function(err, usr){
-        if(err){
-          console.log("Failed to authenticate user, device not registered");
-        }
-        else{
-          User.update(
-            { "email" : data1.email}, 
-            { "$addToSet": { "devices": data1.id }}, 
-            function(error) {
-          });
-
-          var deviceData = {
-            id: data1.id,
-            owner_email: data1.email,
-            components: data1.components
-            /*,
-            switches: data.switches
-            **/
-          }
-
-          Device.deviceCheckIn(deviceData);
-
-
-        }
-        
-        
-      });
-    });
-
-    client.on('deviceEvent', function(data) {
-      io.sockets.emit('dataToTest', "Device event: " + data);
-      var data1 = {"msg_type":"onPropChange", "id":"dev123", "componentId": "2", "propName": "state", "propValue": data}
-      io.sockets.emit('dataToTest', JSON.stringify(data1));
-      Device.updateProp(data1.id, data1.componentId, data1.propName, data1.propValue, function(error,docs){
-        if(error)
-        {
-          console.log(error);
-        }
-        else{
-          var json = {};
-          json[data1.propName] = data1.propValue;
-          console.log("Device props update: " + JSON.stringify(docs));
-          io.sockets.emit(data1.id + data1.componentId, json);
-        }
-        
-      });
-    });
-  
-  });
-
-
-
+let socketHandler = new SocketEventLoader;
+socketHandler.loadSockets();
 
 
 /**
