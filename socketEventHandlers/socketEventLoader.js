@@ -8,9 +8,12 @@ const SocketEventLoader = function(){
             // Create event handlers for this socket
             let eventHandlers = {
                 device: new DeviceHandlers(socket),
-                webpage: new WebpageHandlers(socket),
-                test: new TestHandlers(socket)
+                webpage: new WebpageHandlers(socket)
             };
+
+            if(config.debugMode){
+                eventHandlers.test = new TestHandlers(socket);
+            }
     
             // Bind events to handlers
             for (let category in eventHandlers) {

@@ -8,12 +8,21 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
+global.config = require('./config');
 
-//TDOD: add options to run without db and users in this config file.
-//      add debug mode.
-const config = require('./config');
+//This doesn't work with nodemon... Need to figure out how to get both to work at the same time.
+/*
+const commandLineArgs = require('command-line-args');
+const options = commandLineArgs(config.optionDefinitions);
+config.debugMode = (options.debugmode != undefined ? options.debugmode : false);
+config.singleUserMode = (options.singleuser != undefined ? options.singleuser : false);
+**/
 
-//Change this to match your db dumbass!
+console.log("debugMode: " + config.debugMode);
+console.log("singleUserMode: " + config.singleUserMode);
+
+
+//Change this to match your db dumbass!d
 mongoose.connect('mongodb://localhost/test');
 
 //connect to mongo
@@ -57,7 +66,9 @@ const webTestRouter = require('./routes/web_routes/test');
 const apiUsersRouter = require('./routes/api/users');
 
 app.use('/', webRouter);
-app.use('/test', webTestRouter);
+if(config.debugMode){
+  app.use('/test', webTestRouter);
+}
 app.use('/api/users', apiUsersRouter);
 
 // catch 404 and forward to error handler
