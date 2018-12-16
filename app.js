@@ -4,11 +4,16 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
+global.winston = require('./winston');
+
 global.config = require('./config');
+
+winston.level = (config.debugMode ? "debug" : "error");
+
 
 //This doesn't work with nodemon... Need to figure out how to get both to work at the same time.
 /*
@@ -18,8 +23,8 @@ config.debugMode = (options.debugmode != undefined ? options.debugmode : false);
 config.singleUserMode = (options.singleuser != undefined ? options.singleuser : false);
 **/
 
-console.log("debugMode: " + config.debugMode);
-console.log("singleUserMode: " + config.singleUserMode);
+winston.info("debugMode: " + config.debugMode);
+winston.info("singleUserMode: " + config.singleUserMode);
 
 
 //Change this to match your db dumbass!d
@@ -29,7 +34,7 @@ mongoose.connect('mongodb://localhost/test');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log("connected to mongoDB");
+  winston.info("connected to mongoDB");
 });
 
 //TODO: use sessions for tracking logins
@@ -47,7 +52,7 @@ app.use(express.urlencoded()); // to support URL-encoded bodies
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
