@@ -8,7 +8,7 @@ const WebpageHandlers = function (socket){
 }
 
 function dataFromWebpage(data){
-    console.log(data);
+    winston.debug(data);
     io.sockets.emit("dev123", data);
     io.sockets.emit('dataToTest', "Button clicked on UI");
 }

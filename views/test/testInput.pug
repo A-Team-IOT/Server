@@ -2,11 +2,17 @@ extends ../mixins/layout
 
 block content
   h1 Test Input
-  p Send JSON data to the dataFromDevice listener
+  p Send data to the defined listener
 
   div(id="future")
     form(id="chat_form")
-      input(id="chat_input" type="text" style="width:800px")
+      label listener: 
+      br
+      input(id="listener_input" type="text" style="width:800px" value="testData")
+      br
+      label data: 
+      br
+      input(id="chat_input" type="text" style="width:800px" value="{'msg_type':'onPropChange', 'id':'dev33', 'componentId': '1', 'propName': 'text', 'propValue': 'new text'}")
       input(type="submit" value="Send")
 
   button(id="register") Register
@@ -21,12 +27,13 @@ block content
     })
 
     socket.on('dataToTest', function(data) {
-        $('#log').append("Data: "+ JSON.stringify(data) + "<br/>");
+        $('#log').append(""+ JSON.stringify(data) + "<br/>");
     });
 
     $('form').submit(function(e){
       e.preventDefault();
-      socket.emit('dataFromDevice', $('#chat_input').val());
+      console.log($("#listener_input").val());
+      socket.emit($("#listener_input").val(), $('#chat_input').val());
     });
 
     $("#register").on('click', function(){

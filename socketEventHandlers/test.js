@@ -7,7 +7,8 @@ const TestHandlers = function (socket){
     // Expose handler methods for events
     this.handler = {
         register: register.bind(this), // use the bind function to access this.app and this.socket in events
-        deviceEvent: deviceEvent.bind(this)
+        deviceEvent: deviceEvent.bind(this),
+        testData: testData.bind(this)
     };
 }
 
@@ -58,6 +59,18 @@ function deviceEvent(data){
         }
         
      });
+}
+
+//this listener just outputs data to the test page, with no action taken
+function testData(data){
+  let dataOut;
+  let dt = new Date();
+  let utcDate = dt.toUTCString();
+  try{
+    dataOut = JSON.stringify(data);
+  }
+  catch(e){}
+  io.sockets.emit('dataToTest', utcDate + ". testData: " + data);
 }
 
 module.exports = TestHandlers;
