@@ -72,6 +72,19 @@ DeviceSchema.statics.findDevicesByUser = function (email, callback) {
   });
 }
 
+DeviceSchema.statics.updateProps = function (deviceId, componentId, props, callback) {
+  var set = {$set: {}};
+  for(let i = 0; i < props.length; i++)
+  {
+    set.$set["components.$.props."+props[i].propName] = props[i].propValue;
+  }
+  
+  console.log(JSON.stringify(set));
+  Device.updateOne({ id: deviceId, 'components.id': componentId}, set, function(err, docs){
+    return callback(err, docs);
+  });
+}
+
 DeviceSchema.statics.updateProp = function (deviceId, componentId, propName, propValue, callback) {
   var set = {$set: {}};
   set.$set["components.$.props."+propName] = propValue;
@@ -80,5 +93,6 @@ DeviceSchema.statics.updateProp = function (deviceId, componentId, propName, pro
     return callback(err, docs);
   });
 }
+
 var Device = mongoose.model('Device', DeviceSchema);
 module.exports = Device;

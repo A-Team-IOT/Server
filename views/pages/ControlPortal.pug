@@ -22,7 +22,10 @@ block content
             else{
                 stateFinal = "true"
             }
-            socket.emit("dataFromWebpage", stateFinal);
+
+            buttonJson.state = stateFinal;
+
+            socket.emit("dataToDevice", buttonJson);
         }
 
     h1 #{device.id}
