@@ -6,9 +6,9 @@ const TestHandlers = function (socket){
 
     // Expose handler methods for events
     this.handler = {
-        register: register.bind(this), // use the bind function to access this.app and this.socket in events
-        deviceEvent: deviceEvent.bind(this),
-        testData: testData.bind(this)
+        //register: register.bind(this), // use the bind function to access this.app and this.socket in events
+        //deviceEvent: deviceEvent.bind(this),
+        //testData: testData.bind(this)
     };
 }
 
