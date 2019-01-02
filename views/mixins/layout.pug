@@ -14,9 +14,13 @@ html
        .container-fluid
          .navbar-header
           .navbar-brand A Team IOT
-         ul.nav.navbar-nav
-          li.active
-             a(href="dashboard") Dashboard
+         ul.nav.navbar-nav#navbar
+          li#dashboard-nav
+             a(href="/dashboard") Dashboard
+          li#test-nav
+             a(href="/test") Test
+          li#test-input-nav
+             a(href="/test/input") Test Input
          ul.nav.navbar-nav.navbar-right
           li
             if session.user 

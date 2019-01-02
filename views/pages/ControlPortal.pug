@@ -1,6 +1,8 @@
 extends ../mixins/layout
 block content
     script.
+        $("#dashboard-nav").toggleClass("active", true);
+
         var socket = io.connect()
 
         socket.on('connect', function(data) {
@@ -22,7 +24,10 @@ block content
             else{
                 stateFinal = "true"
             }
-            socket.emit("dataFromWebpage", stateFinal);
+
+            buttonJson.state = stateFinal;
+
+            socket.emit("dataToDevice", buttonJson);
         }
 
     h1 #{device.id}

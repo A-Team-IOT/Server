@@ -33,14 +33,15 @@ DeviceSchema.statics.deviceCheckIn = function (deviceData) {
   Device.findOne({ id: deviceData.id })
     .exec(function (err, device) {
       if (err) {
-        console.log(err);
-      } else if (!device) {
+        winston.debug(err);
+      } 
+      else if (!device) {
         //use schema.create to insert device into the db
         Device.create(deviceData, function (err, user) {
           if (err) {
-            console.log("Error creating device: " + err);
+            winston.debug("Error creating device: " + err);
           } else {
-            console.log("device registered");
+            winston.debug("device registered");
           }
         });
       }
@@ -49,15 +50,15 @@ DeviceSchema.statics.deviceCheckIn = function (deviceData) {
           Device.replaceOne({id: deviceData.id},deviceData, 
             function(error, d) {
               if(err){
-                console.log(err);
+                winston.debug(err);
               }
               else{
-                console.log("Device updated");
+                winston.debug("Device updated");
               }
           });
         }
         else{
-          console.log("The device id is taken");
+          winston.debug("The device id is taken");
         }
       }
    
@@ -67,7 +68,20 @@ DeviceSchema.statics.deviceCheckIn = function (deviceData) {
 
 DeviceSchema.statics.findDevicesByUser = function (email, callback) {
   Device.find({ owner_email: email}, {id: 1, owner_email: 1, _id: 0}, function(err, docs){
-    //console.log(docs);
+    //winston.debug(docs);
+    return callback(err, docs);
+  });
+}
+
+DeviceSchema.statics.updateProps = function (deviceId, componentId, props, callback) {
+  var set = {$set: {}};
+  for(let i = 0; i < props.length; i++)
+  {
+    set.$set["components.$.props."+props[i].propName] = props[i].propValue;
+  }
+  
+  winston.debug(JSON.stringify(set));
+  Device.updateOne({ id: deviceId, 'components.id': componentId}, set, function(err, docs){
     return callback(err, docs);
   });
 }
@@ -75,10 +89,11 @@ DeviceSchema.statics.findDevicesByUser = function (email, callback) {
 DeviceSchema.statics.updateProp = function (deviceId, componentId, propName, propValue, callback) {
   var set = {$set: {}};
   set.$set["components.$.props."+propName] = propValue;
-  console.log(JSON.stringify(set));
+  winston.debug(JSON.stringify(set));
   Device.updateOne({ id: deviceId, 'components.id': componentId}, set, function(err, docs){
     return callback(err, docs);
   });
 }
+
 var Device = mongoose.model('Device', DeviceSchema);
 module.exports = Device;
