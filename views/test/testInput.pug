@@ -1,6 +1,8 @@
 extends ../mixins/layout
 
 block content
+  script.
+    $("#test-input-nav").toggleClass("active", true);
   h1 Test Input
   p Send data to the defined listener
 
@@ -8,14 +10,17 @@ block content
     form(id="chat_form")
       label listener: 
       br
-      input(id="listener_input" type="text" style="width:800px" value="testData")
+      select#event_listener
+        option register
+        option eventFromDevice
+        option eventToDevice
+        option testData
       br
       label data: 
       br
-      input(id="chat_input" type="text" style="width:800px" value="{'msg_type':'onPropChange', 'id':'dev33', 'componentId': '1', 'propName': 'text', 'propValue': 'new text'}")
+      input(id="data_input" type="text" style="width:800px" value="")
       input(type="submit" value="Send")
 
-  button(id="register") Register
   
   div(id="log")
 
@@ -32,10 +37,19 @@ block content
 
     $('form').submit(function(e){
       e.preventDefault();
-      console.log($("#listener_input").val());
-      socket.emit($("#listener_input").val(), $('#chat_input').val());
+      console.log($("#event_listener").val());
+      socket.emit($("#event_listener").val(), $('#data_input').val());
     });
 
-    $("#register").on('click', function(){
-      socket.emit('register', "Test Input Register Event");
+    let exampleJson = {
+      register        : { "email":"ryan@ryan.com", "password": "ryan", "id":"dev33", "components": [{"component_type":"button", "id":"1", "props": {"text":"Click me"} },{"component_type": "light", "id":"2", "props": {"state":"1"} }]},
+      eventFromDevice : { "id": "dev33", "component_id": "2", "props": [{ "propName": "state", "propValue": "0" }] },
+      eventToDevice   : { "id": "dev33", "component_id": "2", "value": "1" },
+      testData        : "4"
+    }
+
+    $('#data_input').val(JSON.stringify(exampleJson[$('#event_listener').val()])); 
+
+    $('#event_listener').on('change', function(){
+     $('#data_input').val(JSON.stringify(exampleJson[$('#event_listener').val()])); 
     });
